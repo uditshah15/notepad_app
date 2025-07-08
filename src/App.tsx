@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import AddNoteModal from './components/AddNoteModal'
+import NoteCard from './components/NoteCard'
 import './App.css'
 import ReactMarkdown from 'react-markdown'
 
@@ -96,8 +95,8 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: name, // Use passed name
-          description: description, // Use passed description
+          name: name,
+          description: description,
         }),
       });
 
@@ -105,8 +104,7 @@ function App() {
         throw new Error(`Failed to create note: ${response.statusText}`);
       }
 
-      await fetchNotes(); // Refresh notes list
-
+      await fetchNotes();
     } catch (err) {
       console.error('Error creating note:', err);
       setError(`Failed to create note: ${err instanceof Error ? err.message : String(err)}`);
@@ -147,36 +145,14 @@ function App() {
           
           <div className="px-4">
             {notes.map((note) => (
-              <Card
+              <NoteCard
                 key={note.id}
-                className={`cursor-pointer my-2 ${
-                  selectedNote?.id === note.id
-                    ? 'bg-blue-50 border-blue-200'
-                    : 'hover:bg-gray-50'
-                }`}
-                onClick={() => fetchNote(note.id)}
-              >
-                  <CardHeader>
-                    <CardTitle>{note.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-xs text-gray-500 mb-2">
-                        {note.created_at && formatDate(note.created_at)}
-                    </p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        deleteNote(note.id)
-                      }}
-                      className="text-white hover:text-red-300"
-                    >
-                      <span>Delete</span>
-                    </Button>
-                  </CardContent>
-                  
-              </Card>
+                note={note}
+                isSelected={selectedNote?.id === note.id}
+                onSelect={fetchNote}
+                onDelete={deleteNote}
+                date={formatDate(note.created_at || '')}
+              />
             ))}
           </div>
         </div>
