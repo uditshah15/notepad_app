@@ -5,7 +5,7 @@ import AddNoteModal from './components/AddNoteModal'
 import './App.css'
 import ReactMarkdown from 'react-markdown'
 
-interface Note {
+type Note = {
   id: number
   name: string
   description: string
@@ -13,7 +13,7 @@ interface Note {
   updated_at?: string
 }
 
-const API_BASE_URL = 'http://localhost:3000'
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 function App() {
   const [notes, setNotes] = useState<Note[]>([]);
