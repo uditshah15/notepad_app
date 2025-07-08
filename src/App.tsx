@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import AddNoteModal from './components/AddNoteModal'
 import './App.css'
+import ReactMarkdown from 'react-markdown'
 
 interface Note {
   id: number
@@ -195,7 +196,15 @@ function App() {
                 )}
 
                 <div className="pt-4">
-                  {selectedNote.description || "No content available."}
+                  {
+                    selectedNote.description ? (
+                      <ReactMarkdown>
+                        {selectedNote.description}
+                      </ReactMarkdown>
+                    ) : (
+                      <p>No content available.</p>
+                    )
+                  }
                 </div>
               </div>
             </>

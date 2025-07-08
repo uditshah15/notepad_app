@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown'; // Import ReactMarkdown
+
 import {
   Dialog,
   DialogContent,
@@ -11,10 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { PlusCircle } from 'lucide-react';
 
-type AddNoteModalProps=  {
+type AddNoteModalProps = {
   onSave: (name: string, description: string) => void;
-}
+};
 
 const AddNoteModal: React.FC<AddNoteModalProps> = ({ onSave }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,13 +36,19 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({ onSave }) => {
     setIsOpen(false);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+
+    if (open) {
+      setNewNoteName('');
+      setNewNoteDescription('');
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className="text-white my-4" variant="outline" size="sm" onClick={() => {
-          setNewNoteName('');
-          setNewNoteDescription('');
-        }}>
+        <Button className="text-white hover:text-gray-500 my-4" variant="outline" size="sm">
           <span>Add note</span>
         </Button>
       </DialogTrigger>
@@ -47,26 +56,38 @@ const AddNoteModal: React.FC<AddNoteModalProps> = ({ onSave }) => {
         <DialogHeader>
           <DialogTitle>Create New Note</DialogTitle>
         </DialogHeader>
-        <div>
-          <div className='mb-4'>
-            <Label htmlFor="name">
-              Name
-            </Label>
-            <Input
-              id="name"
-              value={newNoteName}
-              onChange={(e) => setNewNoteName(e.target.value)}
-            />
-          </div>
+        <div className='mb-4'>
+              <Label className='mb-1' htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={newNoteName}
+                onChange={(e) => setNewNoteName(e.target.value)}
+                required
+              />
+            </div>
+        <div className="grid grid-cols-2 gap-4 min-h-0">
           <div>
-            <Label htmlFor="description">
-              Description
-            </Label>
-            <Textarea
-              id="description"
-              value={newNoteDescription}
-              onChange={(e) => setNewNoteDescription(e.target.value)}
-            />
+            <Label htmlFor="description" className="mb-1">Description (Markdown)</Label>
+              <Textarea
+                id="description"
+                value={newNoteDescription}
+                className='min-h-[200px]'
+                onChange={(e) => setNewNoteDescription(e.target.value)}
+                placeholder="Write note in Markdown format."
+              />
+          </div>
+
+          <div>
+            <Label className="mb-1">Preview</Label>
+            <div className="border p-2 rounded-md min-h-[200px]">
+                {newNoteDescription ? (
+                <ReactMarkdown>
+                  {newNoteDescription}
+                </ReactMarkdown>
+              ) : (
+                <p>Note empty</p>
+              )}
+            </div>
           </div>
         </div>
         <DialogFooter>
